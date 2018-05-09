@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Squares</title>
+</head>
+
+<style type="text/css">
+.s {
+    width: 60px;
+    height: 60px;
+
+    padding: 0px;
+    border: 0px;
+    margin: 0px 3px 0px 3px;
+
+    display: inline-block;
+}
+
+.r {
+    padding: 0px;
+    border: 0px;
+    margin: 3px 0px 3px 0px;
+}
+
+.grey {
+    background-color: grey;
+}
+
+.black {
+    background-color: black;
+}
+</style>
+
+<body>
+
+<div id="map"></div>
+
+<script src="jquery-3.3.1.min.js"></script>
+
+<script>
+
+$(document).ready(function() {
+
+const MAP_WIDTH  = 9;
+const MAP_HEIGHT = 9;
+
+const S_EMPTY  = 0;
+const S_PLAYER = 1;
+
+const CSS_CLASSES = {};
+CSS_CLASSES[S_EMPTY]  = "grey";
+CSS_CLASSES[S_PLAYER] = "black";
+
+
+class SquareType {
+    constructor(id, name, cssClass) {
+        this.id = id;
+        this.name = name;
+        this.cssClass = cssClass;
+    }
+}
+
+class Square {
+    constructor(squareType) {
+        this.squareType = squareType;
+        this.div = null;
+    };
+}
+
+class SquareMatrix {
+    constructor(squareTypeEmpty, squareTypePlayer, numRows, numColumns) {
+        this.squares = [];
+
+        this.squareTypeEmpty = squareTypeEmpty;
+        this.squareTypePlayer = squareTypePlayer;
+        this.numRows = numRows;
+        this.numColumns = numColumns;
+
+        this.init();
+    }
+
+    init() {
+        for (var i = 0; i < this.numRows; i++) {
+            this.squares.push([]);
+
+            for (var j = 0; j < this.numColumns; j++) {
+                this.squares[i][j] = new Square(this.squareTypeEmpty);
+            }
+        }
+    }
+}
+
+
+const squareTypeEmpty = new SquareType(0, "empty", "grey");
+const squareTypePlayer = new SquareType(1, "player", "black");
+
+const squareTypeTable = {
+    0: squareTypeEmpty,
+    1: squareTypePlayer
+};
+
+const squareMatrix = new SquareMatrix(squareTypeEmpty, squareTypePlayer, MAP_HEIGHT, MAP_WIDTH);
+
+const divMap = $("#map");
+
+// Create the DOM of the grid, and load the SQUARES matrix with it.
+for (var i = 0; i < MAP_HEIGHT; i++) {
+    var divRow = $("<div>");
+    divRow.addClass("r");
+    divRow.attr("id", "r-" + i);
+
+    for (var j = 0; j < MAP_WIDTH; j++) {
+        var divSquare = $("<div>");
+        divSquare.addClass("s");
+        divSquare.attr("id", "s-" + i + "-" + j);
+
+        divRow.append(divSquare);
+
+        SQUARES[i][j] = divSquare;
+    }
+
+    divMap.append(divRow);
+}
+
+const rows = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+];
+
+for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+
+    for (var j = 0; j < row.length; j++) {
+        var square = row[j];
+
+        switch (square) {
+        case S_EMPTY:
+            var cssClasses = ["s", CSS_CLASSES[S_EMPTY]];
+            break;
+        case S_PLAYER:
+            var cssClasses = ["s", CSS_CLASSES[S_PLAYER]];
+            break;
+        }
+
+        SQUARES[i][j].attr("class", cssClasses.join(" "));
+
+        divRow.push(divSquare);
+    }
+}
+
+});
+
+</script>
+
+</body>
+
+</html>
